@@ -76,7 +76,16 @@ class LoginBot(object):
             return parsed_link.group('user_id')
 
     def _parse_progress(self, user_id):
-        return 1
+        progress_pattern = re.compile('Fanatic - (\d+)/100')
+
+        badge_popup = self._session.get(
+            'https://stackoverflow.com/users/activity/next-badge-popup?'
+            'userId={}'.format(user_id)
+        )
+        html = BeautifulSoup(badge_popup.content)
+        label = html.find(text=progress_pattern)
+
+        return progress_pattern.match(label).group(1)
 
 
 if __name__ == '__main__':
