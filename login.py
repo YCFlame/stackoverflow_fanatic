@@ -26,6 +26,9 @@ class LoginBot(object):
 
     LOGIN_URL = 'https://stackoverflow.com/users/login'
 
+    def __init__(self):
+        self._session = requests.Session()
+
     def login(self, email, password):
         fkey = self._get_fkey()
         try:
@@ -41,7 +44,7 @@ class LoginBot(object):
             )
 
     def _get_fkey(self):
-        login_page = requests.get(LoginBot.LOGIN_URL)
+        login_page = self._session.get(LoginBot.LOGIN_URL)
         html = BeautifulSoup(login_page.content)
 
         return html.find(
@@ -58,7 +61,10 @@ class LoginBot(object):
             'fkey': fkey,
         }
 
-        login_response = requests.post(LoginBot.LOGIN_URL, data=credentials)
+        login_response = self._session.post(
+            LoginBot.LOGIN_URL,
+            data=credentials
+        )
         html = BeautifulSoup(login_response.content)
 
         try:
