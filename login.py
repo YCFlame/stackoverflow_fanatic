@@ -9,6 +9,7 @@ from __future__ import (
 
 import argparse
 import logging
+import os
 import re
 import sys
 
@@ -16,8 +17,10 @@ from bs4 import BeautifulSoup
 import requests
 
 
+PROJECT_NAME = os.path.basename(os.path.dirname(__file__))
+
 logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s')
-logger = logging.getLogger('stackoverflow_fanatic')
+logger = logging.getLogger(PROJECT_NAME)
 
 
 class LoginError(Exception):
