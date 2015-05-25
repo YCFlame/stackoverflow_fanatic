@@ -29,9 +29,11 @@ class LoginBot(object):
     def login(self, email, password):
         fkey = self._get_fkey()
         try:
-            self._login(email, password, fkey)
+            user_id = self._login(email, password, fkey)
         except LoginError as error:
             sys.exit(error)
+        else:
+            print('Logged in as user {}'.format(user_id))
 
     def _get_fkey(self):
         login_page = requests.get(LoginBot.LOGIN_URL)
@@ -60,7 +62,7 @@ class LoginBot(object):
             raise LoginError('Failed to login!')
         else:
             parsed_link = re.match(r'/users/(?P<user_id>\d+)/.+', profile_link)
-            print('Logged in as user {}'.format(parsed_link.group('user_id')))
+            return parsed_link.group('user_id')
 
 
 if __name__ == '__main__':
