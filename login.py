@@ -70,10 +70,22 @@ class LoginBot(object):
         try:
             profile_link = html.find('a', {'class': 'profile-me'})['href']
         except TypeError:
-            raise LoginError('Failed to login!')
+            problem = self._parse_error_message(html)
+            raise LoginError('Failed to login: {}'.format(problem))
         else:
             parsed_link = re.match(r'/users/(?P<user_id>\d+)/.+', profile_link)
             return parsed_link.group('user_id')
+
+    def _parse_error_message(self, html):
+        error_script_pattern = re.compile(
+            'StackExchange.helpers.showMessage\(.+?,(.+?),.+?\)',
+            re.DOTALL
+        )
+
+        script = html.find(text=error_script_pattern)
+        message = error_script_pattern.search(script).group(1)
+
+        return message.strip('\n \'')
 
     def _parse_progress(self, user_id):
         progress_pattern = re.compile('Fanatic - (\d+)/100')
