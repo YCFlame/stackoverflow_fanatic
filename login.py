@@ -7,15 +7,12 @@ from __future__ import (
     unicode_literals,
 )
 
+import argparse
 import re
 import sys
 
 from bs4 import BeautifulSoup
 import requests
-
-
-EMAIL = '<YOUR EMAIL ADDRESS>'
-PASSWORD = '<YOUR PASSWORD>'
 
 
 class LoginError(Exception):
@@ -93,5 +90,26 @@ class LoginBot(object):
         return re.search('Fanatic - (\d+)/100', badge_popup.content).group(1)
 
 
+def _parse_commandline_arguments():
+    program_description = (
+        'Log into your stackoverflow account to increment your'
+        ' `consecutive days logged in` counter.'
+    )
+
+    parser = argparse.ArgumentParser(description=program_description)
+    parser.add_argument(
+        'email',
+        help='the email address registered with your account'
+    )
+    parser.add_argument(
+        'password',
+        help='the password to your account'
+    )
+
+    return parser.parse_args()
+
+
 if __name__ == '__main__':
-    LoginBot().login(EMAIL, PASSWORD)
+    args = _parse_commandline_arguments()
+
+    LoginBot().login(args.email, args.password)
