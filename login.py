@@ -65,16 +65,15 @@ class LoginBot(object):
             LoginBot.LOGIN_URL,
             data=credentials
         )
-        html = BeautifulSoup(login_response.content)
 
         try:
-            profile_link = html.find('a', {'class': 'profile-me'})['href']
-        except TypeError:
-            problem = self._parse_error_message(html.text)
+            return re.search(
+                '/users/(?P<user_id>\d+)/',
+                login_response.content
+            ).group('user_id')
+        except AttributeError:
+            problem = self._parse_error_message(login_response.content)
             raise LoginError('Failed to login: {}'.format(problem))
-        else:
-            parsed_link = re.match(r'/users/(?P<user_id>\d+)/.+', profile_link)
-            return parsed_link.group('user_id')
 
     def _parse_error_message(self, html):
         message = re.search(
