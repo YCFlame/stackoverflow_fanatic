@@ -8,11 +8,16 @@ from __future__ import (
 )
 
 import argparse
+import logging
 import re
 import sys
 
 from bs4 import BeautifulSoup
 import requests
+
+
+logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s')
+logger = logging.getLogger('stackoverflow_fanatic')
 
 
 class LoginError(Exception):
@@ -25,19 +30,21 @@ class LoginBot(object):
 
     def __init__(self):
         self._session = requests.Session()
+        logger.setLevel(logging.INFO)
 
     def login(self, email, password):
         fkey = self._get_fkey()
         try:
             user_id = self._login(email, password, fkey)
         except LoginError as error:
+            logger.error(error)
             sys.exit(error)
         else:
             num_days = self._parse_progress(user_id)
-            print(
-                'User {} visited stackoverflow for {} consecutive days'.format(
-                    user_id, num_days
-                )
+            logger.info(
+                'User %s visited stackoverflow for %s consecutive days',
+                user_id,
+                num_days,
             )
 
     def _get_fkey(self):
