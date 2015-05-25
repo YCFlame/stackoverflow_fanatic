@@ -70,34 +70,27 @@ class LoginBot(object):
         try:
             profile_link = html.find('a', {'class': 'profile-me'})['href']
         except TypeError:
-            problem = self._parse_error_message(html)
+            problem = self._parse_error_message(html.text)
             raise LoginError('Failed to login: {}'.format(problem))
         else:
             parsed_link = re.match(r'/users/(?P<user_id>\d+)/.+', profile_link)
             return parsed_link.group('user_id')
 
     def _parse_error_message(self, html):
-        error_script_pattern = re.compile(
+        message = re.search(
             'StackExchange.helpers.showMessage\(.+?,(.+?),.+?\)',
+            html,
             re.DOTALL
-        )
-
-        script = html.find(text=error_script_pattern)
-        message = error_script_pattern.search(script).group(1)
+        ).group(1)
 
         return message.strip('\n \'')
 
     def _parse_progress(self, user_id):
-        progress_pattern = re.compile('Fanatic - (\d+)/100')
-
         badge_popup = self._session.get(
             'https://stackoverflow.com/users/activity/next-badge-popup?'
             'userId={}'.format(user_id)
         )
-        html = BeautifulSoup(badge_popup.content)
-        label = html.find(text=progress_pattern)
-
-        return progress_pattern.match(label).group(1)
+        return re.search('Fanatic - (\d+)/100', badge_popup.content).group(1)
 
 
 if __name__ == '__main__':
