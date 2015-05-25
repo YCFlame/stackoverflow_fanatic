@@ -33,7 +33,12 @@ class LoginBot(object):
         except LoginError as error:
             sys.exit(error)
         else:
-            print('Logged in as user {}'.format(user_id))
+            num_days = self._parse_progress(user_id)
+            print(
+                'User {} visited stackoverflow for {} consecutive days'.format(
+                    user_id, num_days
+                )
+            )
 
     def _get_fkey(self):
         login_page = requests.get(LoginBot.LOGIN_URL)
@@ -63,6 +68,9 @@ class LoginBot(object):
         else:
             parsed_link = re.match(r'/users/(?P<user_id>\d+)/.+', profile_link)
             return parsed_link.group('user_id')
+
+    def _parse_progress(self, user_id):
+        return 1
 
 
 if __name__ == '__main__':
