@@ -112,7 +112,7 @@ def _parse_commandline_arguments():
         help='the email address registered with your account'
     )
     parser.add_argument(
-        'password',
+        '--password',
         help='the password to your account'
     )
 
@@ -121,5 +121,8 @@ def _parse_commandline_arguments():
 
 if __name__ == '__main__':
     args = _parse_commandline_arguments()
+    password = args.password if args.password else raw_input(
+        'Please enter your password: '
+    )
 
-    LoginBot().login(args.email, args.password)
+    LoginBot().login(args.email, password)
