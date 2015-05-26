@@ -17,7 +17,7 @@ from bs4 import BeautifulSoup
 import requests
 
 
-PROJECT_NAME = os.path.basename(os.path.dirname(__file__))
+PROJECT_NAME = os.path.basename(os.path.dirname(os.path.abspath(__file__)))
 
 logging.basicConfig(format='%(asctime)s %(levelname)s %(name)s: %(message)s')
 logger = logging.getLogger(PROJECT_NAME)
