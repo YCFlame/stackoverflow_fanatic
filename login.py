@@ -52,7 +52,7 @@ class LoginBot(object):
 
     def _get_fkey(self):
         login_page = self._session.get(LoginBot.LOGIN_URL)
-        html = BeautifulSoup(login_page.content)
+        html = BeautifulSoup(login_page.content, "html.parser")
 
         return html.find(
             id='login-form'
@@ -72,7 +72,7 @@ class LoginBot(object):
             LoginBot.LOGIN_URL,
             data=credentials
         )
-        html = BeautifulSoup(login_response.content)
+        html = BeautifulSoup(login_response.content, "html.parser")
 
         try:
             profile_link = html.find('a', {'class': 'profile-me'})['href']
