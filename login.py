@@ -97,7 +97,13 @@ class LoginBot(object):
             'https://stackoverflow.com/users/activity/next-badge-popup?'
             'userId={}'.format(user_id)
         )
-        return re.search('Fanatic - (\d+)/100', badge_popup.content).group(1)
+        html = BeautifulSoup(badge_popup.content, "html.parser")
+
+        badge = html.find('div', **{'data-badge-database-name': 'Fanatic'})
+        if not 'completed' in badge.attrs['class']:
+            return re.search('Fanatic - (\d+)/100', str(badge)).group(1)
+        else:
+            return '100+'
 
 
 def _parse_commandline_arguments():
