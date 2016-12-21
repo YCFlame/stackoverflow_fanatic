@@ -55,7 +55,7 @@ class LoginBot(object):
         html = BeautifulSoup(login_page.content)
 
         return html.find(
-            id='se-login-form'
+            id='login-form'
         ).find(
             'input',
             {'type': 'hidden', 'name': 'fkey'}
