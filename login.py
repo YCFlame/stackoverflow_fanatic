@@ -75,7 +75,7 @@ class LoginBot(object):
         html = BeautifulSoup(login_response.content)
 
         try:
-            profile_link = html.find('a', {'class': 'profile-me'})['href']
+            profile_link = html.find('a', {'class': 'my-profile js-gps-track'})['href']
         except TypeError:
             problem = self._parse_error_message(html.text)
             raise LoginError('Failed to login: {}'.format(problem))
